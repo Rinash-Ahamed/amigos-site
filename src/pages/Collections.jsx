@@ -49,10 +49,10 @@ const ALL_PRODUCTS = [
 
 
 const css = `
-.coll-page { padding-top: 72px; min-height: 100vh; }
+.coll-page { padding-top: 72px; min-height: 100dvh; }
 .coll-hero {
   position: relative;
-  height: 40vh;
+  height: 40dvh;
   min-height: 320px;
   display: flex;
   align-items: flex-end;
@@ -104,7 +104,6 @@ const css = `
   border: 1px solid #1a1a1a;
   transition: all 0.3s;
   white-space: nowrap;
-  cursor: none;
 }
 .filter-btn:hover, .filter-btn.active {
   color: #f5f0eb;
@@ -136,7 +135,6 @@ const css = `
   background: #0f0f0f;
   margin-bottom: 12px;
   position: relative;
-  cursor: none;
 }
 .coll-card__img {
   width: 100%; height: 100%;
@@ -150,6 +148,12 @@ const css = `
 }
 .coll-card__name { font-family: 'Cormorant Garamond', serif; font-size: 17px; color: #c4c4c4; margin-bottom: 6px; }
 .coll-card__meta { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.16em; color: #6b6b6b; text-transform: uppercase; }
+
+@media (pointer: fine) {
+  .filter-btn, .coll-card__img-wrap {
+    cursor: none;
+  }
+}
 
 @media (max-width: 1024px) { .coll-grid { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 768px) {

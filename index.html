@@ -8,6 +8,18 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+      html, body {
+        /* Prevent iOS rubber-banding and pull-to-refresh conflicts */
+        overscroll-behavior: none;
+        /* Prevent iOS from zooming text on orientation change */
+        -webkit-text-size-adjust: 100%;
+      }
+      /* Hide the custom cursor completely on devices with touch screens */
+      @media (pointer: coarse) {
+        .custom-cursor-wrapper { display: none !important; }
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>

@@ -1,12 +1,15 @@
-import React, { useRef } from 'react'
-import { useInView } from '../hooks/useInView'
+import React, { useEffect, useRef } from 'react'
+import gsap from 'gsap'
+import ScrollTrigger from 'gsap/ScrollTrigger'
 import Footer from '../components/Footer'
+
+gsap.registerPlugin(ScrollTrigger)
 
 const css = `
 .about-page { padding-top: 72px; }
 .about-hero {
   position: relative;
-  height: 80vh;
+  height: 80dvh;
   min-height: 500px;
   display: flex;
   align-items: center;
@@ -56,14 +59,32 @@ const css = `
   color: #9a9a9a;
   line-height: 1.6;
 }
+.about-marquee-container {
+  overflow: hidden;
+  padding: 100px 0 0;
+  border-top: 1px solid #1a1a1a;
+}
+.about-marquee h2 {
+  font-family: 'Space Mono', monospace;
+  font-size: clamp(50px, 10vw, 150px);
+  font-weight: 900;
+  color: #1a1a1a;
+  line-height: 1;
+  white-space: nowrap;
+  text-transform: uppercase;
+  will-change: transform;
+}
 .about-body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 80px;
-  padding: 100px 48px;
-  border-top: 1px solid #1a1a1a;
+  padding: 80px 48px 100px;
 }
-.about-body__text-col {}
+.reveal-up {
+  opacity: 0;
+  transform: translateY(40px);
+  will-change: opacity, transform;
+}
 .about-body__section-num {
   font-family: 'Space Mono', monospace;
   font-size: 9px;
@@ -98,6 +119,9 @@ const css = `
 .value-tile {
   background: #080808;
   padding: 48px 36px;
+  opacity: 0;
+  transform: translateY(40px);
+  will-change: opacity, transform;
 }
 .value-tile__icon {
   font-size: 28px;
@@ -125,44 +149,91 @@ const css = `
 `
 
 export default function About() {
+  const container = useRef(null)
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Giant background text scrub
+      gsap.to('.about-marquee h2', {
+        xPercent: -25,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '.about-marquee-container',
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: true,
+        }
+      })
+
+      // Smooth fade up for paragraphs
+      gsap.utils.toArray('.reveal-up').forEach(el => {
+        gsap.to(el, {
+          y: 0,
+          opacity: 1,
+          duration: 1.2,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 85%',
+          }
+        })
+      })
+
+      // Stagger value tiles
+      gsap.to('.value-tile', {
+        y: 0,
+        opacity: 1,
+        duration: 1,
+        stagger: 0.15,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '.about-values',
+          start: 'top 85%',
+        }
+      })
+    }, container)
+
+    return () => ctx.revert()
+  }, [])
+
   return (
     <>
       <style>{css}</style>
-      <div className="about-page">
+      <div className="about-page" ref={container}>
         <div className="about-hero">
           <div className="about-hero__bg" />
           <div className="about-hero__overlay" />
           <div className="about-hero__content">
-            <p className="about-hero__eyebrow">Our Story — Since 2024</p>
+            <p className="about-hero__eyebrow">Our Story - Since 2012</p>
             <h1 className="about-hero__title">
               Fashion<br />
               <em>Reimagined.</em>
             </h1>
             <p className="about-hero__subtitle">
-              One store. Fifty brands. Infinite styles.
+              One store. Fifty+ brands. Infinite styles.
             </p>
           </div>
         </div>
 
+        <div className="about-marquee-container">
+          <div className="about-marquee">
+            <h2>EST. 2012 - PREMIUM CURATION - 50+ BRANDS - ENDLESS STYLE - EST. 2012 - PREMIUM CURATION - 50+ BRANDS </h2>
+          </div>
+        </div>
+
         <div className="about-body">
-          <div className="about-body__text-col">
+          <div className="about-body__text-col reveal-up">
             <p className="about-body__section-num">01 / Our Mission</p>
-            <h2 className="about-body__heading">Bringing the world's best fashion to your doorstep</h2>
+            <h2 className="about-body__heading">Culture over clothing.</h2>
             <p className="about-body__para">
-              AMIGOS was born from a simple belief — fashion should be accessible, exciting, and personal. We are not just a store; we are a destination where style meets culture, where brands meet stories.
-            </p>
-            <p className="about-body__para">
-              From casual basics to premium eveningwear, from kids' first outfits to workplace formals — AMIGOS is the one place that dresses every chapter of your life.
+              AMIGOS is a destination where style meets culture. From casual basics to premium eveningwear, we dress every chapter of your life.
             </p>
           </div>
-          <div className="about-body__text-col">
+          <div className="about-body__text-col reveal-up">
             <p className="about-body__section-num">02 / What We Do</p>
-            <h2 className="about-body__heading">Curating culture, not just clothing</h2>
+            <h2 className="about-body__heading">Curated for you.</h2>
             <p className="about-body__para">
-              We partner with over 50 premium and high-street brands, carefully selecting each collection to ensure variety, quality, and style. Our team of fashion editors curates new arrivals every season.
-            </p>
-            <p className="about-body__para">
-              Men, Women, Kids — every age, every occasion, every mood. AMIGOS is where India comes to dress.
+              We partner with over 50 premium brands, hand-picking collections for quality and style. Men, Women, Kids — this is where India comes to dress.
             </p>
           </div>
         </div>

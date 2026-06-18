@@ -1,5 +1,9 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
+import gsap from 'gsap'
+import ScrollTrigger from 'gsap/ScrollTrigger'
 import Footer from '../components/Footer'
+
+gsap.registerPlugin(ScrollTrigger)
 
 const sizeSections = [
   {
@@ -32,10 +36,32 @@ const sizeSections = [
 ]
 
 const css = `
-.size-page { padding-top: 72px; min-height: 100vh; }
+.size-page { padding-top: 72px; min-height: 100dvh; }
 .size-hero {
-  padding: 120px 48px 64px;
-  border-bottom: 1px solid #1a1a1a;
+  position: relative;
+  height: 50dvh;
+  min-height: 350px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.size-hero__bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1649207688720-e5aadb947481?w=1600&q=90&fit=crop');
+  background-size: cover;
+  background-position: center;
+  filter: grayscale(100%) contrast(1.1) brightness(0.8);
+}
+.size-hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(8,8,8,0.65);
+}
+.size-hero__content {
+  position: relative;
+  z-index: 2;
+  padding: 0 48px;
 }
 .size-hero__eyebrow {
   font-family: 'Space Mono', monospace;
@@ -64,6 +90,9 @@ const css = `
 .size-panel {
   background: #080808;
   padding: 36px;
+  opacity: 0;
+  transform: translateY(40px);
+  will-change: opacity, transform;
 }
 .size-panel__title {
   font-family: 'Playfair Display', serif;
@@ -92,6 +121,21 @@ const css = `
   font-family: 'Cormorant Garamond', serif;
   font-size: 18px;
   color: #c4c4c4;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+.size-table td:first-child {
+  font-weight: bold;
+  color: #f5f0eb;
+}
+.size-table tbody tr {
+  transition: background-color 0.3s ease;
+}
+.size-table tbody tr:hover {
+  background-color: rgba(245, 240, 235, 0.05);
+}
+.size-table tbody tr:hover td {
+  color: #f5f0eb;
+  transform: translateX(8px);
 }
 .size-note {
   padding: 0 48px 80px;
@@ -105,7 +149,7 @@ const css = `
   .size-content { grid-template-columns: 1fr; }
 }
 @media (max-width: 768px) {
-  .size-hero { padding: 96px 24px 48px; }
+  .size-hero__content { padding: 0 24px; }
   .size-content { padding: 40px 24px 72px; }
   .size-panel { padding: 28px; }
   .size-note { padding: 0 24px 64px; }
@@ -113,13 +157,36 @@ const css = `
 `
 
 export default function SizeGuide() {
+  const container = useRef(null)
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.to('.size-panel', {
+        y: 0,
+        opacity: 1,
+        duration: 1,
+        stagger: 0.15,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '.size-content',
+          start: 'top 85%',
+        }
+      })
+    }, container)
+    return () => ctx.revert()
+  }, [])
+
   return (
     <>
       <style>{css}</style>
-      <div className="size-page">
+      <div className="size-page" ref={container}>
         <section className="size-hero">
-          <p className="size-hero__eyebrow">Fit Reference</p>
-          <h1 className="size-hero__title">Size<br /><em>Guide.</em></h1>
+          <div className="size-hero__bg" />
+          <div className="size-hero__overlay" />
+          <div className="size-hero__content">
+            <p className="size-hero__eyebrow">Fit Reference</p>
+            <h1 className="size-hero__title">Size<br /><em>Guide.</em></h1>
+          </div>
         </section>
 
         <section className="size-content">

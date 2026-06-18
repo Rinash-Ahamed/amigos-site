@@ -2,12 +2,35 @@ import React from 'react'
 import Footer from '../components/Footer'
 
 const instagramUrl = 'https://www.instagram.com/amigos_menswear/'
+const whatsappNumber = '919791834497'
 
 const css = `
-.contact-page { padding-top: 72px; min-height: 100vh; }
+.contact-page { padding-top: 72px; min-height: 100dvh; }
 .contact-hero {
-  padding: 120px 48px 64px;
-  border-bottom: 1px solid #1a1a1a;
+  position: relative;
+  height: 50dvh;
+  min-height: 350px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.contact-hero__bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1605518216938-7c31b7b14ad0?w=1600&q=90&fit=crop');
+  background-size: cover;
+  background-position: center;
+  filter: grayscale(100%) contrast(1.1) brightness(0.8);
+}
+.contact-hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(8,8,8,0.65);
+}
+.contact-hero__content {
+  position: relative;
+  z-index: 2;
+  padding: 0 48px;
 }
 .contact-hero__eyebrow {
   font-family: 'Space Mono', monospace;
@@ -97,26 +120,50 @@ const css = `
   font-size: 10px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  cursor: none;
+}
+@media (pointer: fine) {
+  .contact-submit {
+    cursor: none;
+  }
 }
 @media (max-width: 900px) {
   .contact-body { grid-template-columns: 1fr; }
 }
 @media (max-width: 768px) {
-  .contact-hero { padding: 96px 24px 48px; }
+  .contact-hero__content { padding: 0 24px; }
   .contact-body { padding: 40px 24px 72px; }
   .contact-panel { padding: 32px 28px; }
 }
 `
 
 export default function Contact() {
+  const handleWhatsAppSubmit = (e) => {
+    e.preventDefault()
+    const formData = new FormData(e.target)
+    const name = formData.get('name')
+    const email = formData.get('email')
+    const message = formData.get('message')
+    
+    // Format the message for WhatsApp
+    const text = `*New Inquiry from AMIGOS*\n\n*Name:* ${name}\n*Email:* ${email}\n*Message:* ${message}`
+    const encodedText = encodeURIComponent(text)
+    
+    // Open WhatsApp URL in a new tab
+    const url = `https://wa.me/${whatsappNumber}?text=${encodedText}`
+    window.open(url, '_blank')
+  }
+
   return (
     <>
       <style>{css}</style>
       <div className="contact-page">
         <section className="contact-hero">
-          <p className="contact-hero__eyebrow">Contact Us</p>
-          <h1 className="contact-hero__title">Let us<br /><em>help.</em></h1>
+          <div className="contact-hero__bg" />
+          <div className="contact-hero__overlay" />
+          <div className="contact-hero__content">
+            <p className="contact-hero__eyebrow">Contact Us</p>
+            <h1 className="contact-hero__title">Let us<br /><em>help.</em></h1>
+          </div>
         </section>
 
         <section className="contact-body">
@@ -132,11 +179,11 @@ export default function Contact() {
 
           <div className="contact-panel">
             <h2 className="contact-panel__title">Send an inquiry</h2>
-            <form className="contact-form">
-              <input className="contact-input" type="text" placeholder="Name" aria-label="Name" />
-              <input className="contact-input" type="email" placeholder="Email" aria-label="Email" />
-              <textarea className="contact-message" placeholder="Message" aria-label="Message" />
-              <button className="contact-submit" type="button">Submit</button>
+            <form className="contact-form" onSubmit={handleWhatsAppSubmit}>
+              <input className="contact-input" name="name" type="text" placeholder="Name" aria-label="Name" required />
+              <input className="contact-input" name="email" type="email" placeholder="Email" aria-label="Email" required />
+              <textarea className="contact-message" name="message" placeholder="Message" aria-label="Message" required />
+              <button className="contact-submit" type="submit">Submit via WhatsApp</button>
             </form>
           </div>
         </section>

@@ -109,7 +109,8 @@ const css = `
 .nav__mobile {
   position: fixed;
   inset: 0;
-  background: #080808;
+  background: rgba(8, 8, 8, 0.95);
+  backdrop-filter: blur(15px);
   z-index: 8999;
   display: flex;
   flex-direction: column;
@@ -117,20 +118,31 @@ const css = `
   justify-content: center;
   gap: 32px;
   clip-path: inset(0 0 100% 0);
-  transition: clip-path 0.6s cubic-bezier(0.76,0,0.24,1);
+  transition: clip-path 0.8s cubic-bezier(0.76, 0, 0.24, 1), background 0.8s;
 }
 .nav__mobile.open {
   clip-path: inset(0 0 0% 0);
 }
 .nav__mobile a {
   font-family: 'Playfair Display', serif;
-  font-size: clamp(36px, 8vw, 64px);
+  font-size: clamp(28px, 6vw, 42px);
   font-style: italic;
   color: #f5f0eb;
   letter-spacing: -0.02em;
-  transition: color 0.3s;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: color 0.3s, opacity 0.3s ease, transform 0.3s ease;
 }
 .nav__mobile a:hover { color: #6b6b6b; }
+
+.nav__mobile.open a {
+  opacity: 1;
+  transform: translateY(0);
+}
+.nav__mobile.open a:nth-child(1) { transition-delay: 0.3s; transition-duration: 0.6s; }
+.nav__mobile.open a:nth-child(2) { transition-delay: 0.4s; transition-duration: 0.6s; }
+.nav__mobile.open a:nth-child(3) { transition-delay: 0.5s; transition-duration: 0.6s; }
+.nav__mobile.open a:nth-child(4) { transition-delay: 0.6s; transition-duration: 0.6s; }
 
 @media (max-width: 768px) {
   .nav { padding: 0 24px; }
@@ -190,9 +202,10 @@ export default function Navbar() {
       </nav>
 
       <div className={`nav__mobile${menuOpen ? ' open' : ''}`}>
-        <Link to="/">Home</Link>
-        <Link to="/collections">Collections</Link>
-        <Link to="/about">About</Link>
+        <Link to="/" onClick={() => setMenuOpen(false)}>Home</Link>
+        <Link to="/collections" onClick={() => setMenuOpen(false)}>Collections</Link>
+        <Link to="/about" onClick={() => setMenuOpen(false)}>About</Link>
+        <Link to="/contact" onClick={() => setMenuOpen(false)}>Contact</Link>
       </div>
     </>
   )
